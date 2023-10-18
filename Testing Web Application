@@ -1,0 +1,149 @@
+package Testngdemo;
+
+import java.time.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+
+
+public class ikea {
+	
+	WebDriver driver;
+	
+
+  @BeforeTest
+  
+  public void Setup() {
+	  
+	  WebDriverManager.chromedriver().setup();
+	  driver = new ChromeDriver();
+	  driver.manage().window().maximize();
+	  driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(50));
+	  driver.get("https://www.ikea.com/in/en/");
+	 	 }
+	
+	@Test (priority=1)
+	public void IkeaAlert()  { 
+		
+		
+		driver.findElement(By.id("onetrust-accept-btn-handler")).click();
+		
+	}
+	
+	@Test (priority=2)
+	public void homepage() 	{
+		String expectedTitle = "IKEA India-Affordable home furniture, designs & ideas - IKEA";
+        String actualTitle = driver.getTitle();
+        Assert.assertEquals(actualTitle, expectedTitle, "Title does not match");
+		
+	}
+	
+	
+	@Test (priority=3)
+	public void searchproduct() 	{
+		
+		 // Find the search input element
+        WebElement searchInput = driver.findElement(By.id("ikea-search-input"));
+
+        // Type the product name you want to search
+        searchInput.sendKeys("LAGKAPTEN / ALEX");
+
+        // Submit the form
+        searchInput.submit();
+
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        // Scroll down by 500 pixels
+        js.executeScript("window.scrollBy(0, 500)");
+
+       try {  Thread.sleep(100);} catch (InterruptedException e) { e.printStackTrace();}
+
+	}
+	
+	@Test (priority=4)
+	public void addtocard() {
+		
+		
+    // selecting product
+    driver.findElement(By.xpath("//*[@id=\"product-list\"]/div[1]/div[1]/div/div[2]/a/img[2]")).click();
+    
+    JavascriptExecutor js = (JavascriptExecutor) driver;
+
+    // Scroll down by 600 pixels
+    js.executeScript("window.scrollBy(0, 600)");
+
+   try {  Thread.sleep(100);} catch (InterruptedException e) { e.printStackTrace();}
+
+   // Locate and click the 'Add to Cart' button
+   
+   WebElement addTobagButton = driver.findElement(By.xpath("//*[@id=\"pip-buy-module-content\"]/div[4]/div/div/div/button"));
+   addTobagButton.click();
+  
+   // click on the 'continue to bag' button
+   WebElement continuetobag =driver.findElement(By.xpath("/html/body/div[15]/div/div[3]/div/div/div/div[2]/div[1]/div/a"));
+   continuetobag.click();
+   
+
+   // Verify the item is added to the cart
+   WebElement cartIcon = driver.findElement(By.xpath("//*[@id=\"one-checkout\"]/main/div/div/div/div[20]/div[4]/div/div/div/div/div[1]/div/img"));
+   Assert.assertTrue(cartIcon.isDisplayed(), "Item was not added to the cart successfully");
+  
+	}                   
+	
+	@Test (priority=5)
+	public void uploadphotosearchtest() {
+		
+		
+		
+		 // Locate the search bar
+        WebElement cam=driver.findElement(By.id("search-box__visualsearch"));
+        cam.click();
+        
+        WebElement upload=driver.findElement(By.xpath("//input[@type=\"file\"]"));
+        
+        // location of photo to upload
+        upload.sendKeys("C:\\Users\\admin\\Pictures\\Screenshots\\Screenshot 2023-10-18 125741.png");
+		
+        
+        // Find the image element
+        WebElement imageElement = driver.findElement(By.xpath("//*[@id=\"content\"]/div/div/div/section/img"));
+        
+        // Assert that the image is displayed
+        Assert.assertTrue(imageElement.isDisplayed(), "Image is not displayed");
+    
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        // Scroll down by 600 pixels
+        js.executeScript("window.scrollBy(0, 600)");
+
+       try {  Thread.sleep(100);} catch (InterruptedException e) { e.printStackTrace();}
+       
+       driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(200));
+		
+    
+      }
+	
+	@AfterTest 
+	
+    public void tearDown() {
+		
+        // Close the browser
+		
+     driver.quit();		
+
+
+
+}
+	
+}
+  
